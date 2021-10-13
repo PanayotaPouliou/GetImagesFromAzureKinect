@@ -1,15 +1,13 @@
 import sys
-sys.path.insert(1, '../pyKinectAzure/')
+sys.path.insert(1, 'C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\pyKinectAzure')
 
 import numpy as np
-from pyKinectAzure import pyKinectAzure, _k4a
+from pyKinectAzure import pyKinectAzure, _k4a, postProcessing
 import cv2
+import os
 
 # Path to the module
-# TODO: Modify with the path containing the k4a.dll from the Azure Kinect SDK
 modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll' 
-# under x86_64 linux please use r'/usr/lib/x86_64-linux-gnu/libk4a.so'
-# In Jetson please use r'/usr/lib/aarch64-linux-gnu/libk4a.so'
 
 if __name__ == "__main__":
 
@@ -52,20 +50,32 @@ if __name__ == "__main__":
 			# Convert depth image (mm) to color, the range needs to be reduced down to the range (0,255)
 			transformed_depth_color_image = cv2.applyColorMap(np.round(transformed_depth_image/30).astype(np.uint8), cv2.COLORMAP_JET)
 
-			# Add the depth image over the color image:
-			combined_image = cv2.addWeighted(color_image,0.7,transformed_depth_color_image,0.3,0)
-			
-			# Plot the image
-			cv2.namedWindow('Colorized Depth Image',cv2.WINDOW_NORMAL)
-			cv2.imshow('Colorized Depth Image',combined_image)
-			k = cv2.waitKey(25)
+			# Smooth the image using Navier-Stokes based inpainintg. maximum_hole_size defines 
+			# the maximum hole size to be filled, bigger hole size will take longer time to process
+			maximum_hole_size = 10
+			smoothed_depth_image = postProcessing.smooth_depth_image(transformed_depth_image, maximum_hole_size)
+
+			# Convert depth image (mm) to color, the range needs to be reduced down to the range (0,255)
+			smooth_depth_color_image = cv2.applyColorMap(np.round(smoothed_depth_image/30).astype(np.uint8), cv2.COLORMAP_JET)
+
+			# Filename
+			filename = 'mapped.png'
+			filename_1 = 'Smooth_mapped.png' #not sure how to work with that
+			filename_2 = 'color.png'
+
+			# Saving the edited depth image
+			cv2.imwrite(filename, transformed_depth_image)
+			cv2.imwrite(filename_1, smooth_depth_color_image)
+			cv2.imwrite(filename_2, color_image)
+
+			k = 1
 
 			pyK4A.image_release(depth_image_handle)
 			pyK4A.image_release(color_image_handle)
 
 		pyK4A.capture_release()
 
-		if k==27:    # Esc key to stop
+		if k==1:    # Esc key to stop
 			break
 
 	pyK4A.device_stop_cameras()
