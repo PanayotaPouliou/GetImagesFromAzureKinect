@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1, '../pyKinectAzure/')
+sys.path.insert(1, 'C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\pyKinectAzure')
 
 import numpy as np
 from pyKinectAzure import pyKinectAzure, _k4a
