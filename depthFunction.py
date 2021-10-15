@@ -6,10 +6,10 @@ from pyKinectAzure import pyKinectAzure, _k4a, postProcessing
 import cv2
 import os
 
-# Path to the module
-modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll' 
-
-if __name__ == "__main__":
+#path: where to save the output, w: write 'color' for colored_depth / anything else for regular, maximum_hole_size: the bigger number-the better
+def get_data(path, w, maximum_hole_size):
+	# Path to the module
+	modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
 
 	# Initialize the library with the path containing the module
 	pyK4A = pyKinectAzure(modulePath)
@@ -20,13 +20,13 @@ if __name__ == "__main__":
 	# Modify camera configuration
 	device_config = pyK4A.config
 	device_config.color_format = _k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32
-	device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_720P
+	device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_1080P
 	device_config.depth_mode = _k4a.K4A_DEPTH_MODE_WFOV_2X2BINNED
 	print(device_config)
 
 	# Start cameras using modified configuration
 	pyK4A.device_start_cameras(device_config)
-
+	
 	k = 0
 	while True:
 		# Get capture
@@ -47,26 +47,44 @@ if __name__ == "__main__":
 			# Transform the depth image to the color format
 			transformed_depth_image = pyK4A.transform_depth_to_color(depth_image_handle,color_image_handle)
 
-			# Convert depth image (mm) to color, the range needs to be reduced down to the range (0,255)
-			transformed_depth_color_image = cv2.applyColorMap(np.round(transformed_depth_image/30).astype(np.uint8), cv2.COLORMAP_JET)
-
 			# Smooth the image using Navier-Stokes based inpainintg. maximum_hole_size defines 
 			# the maximum hole size to be filled, bigger hole size will take longer time to process
-			maximum_hole_size = 10
 			smoothed_depth_image = postProcessing.smooth_depth_image(transformed_depth_image, maximum_hole_size)
-
+			
 			# Convert depth image (mm) to color, the range needs to be reduced down to the range (0,255)
 			smooth_depth_color_image = cv2.applyColorMap(np.round(smoothed_depth_image/30).astype(np.uint8), cv2.COLORMAP_JET)
 
 			# Filename
-			filename = 'mapped.png'
-			filename_1 = 'Smooth_mapped.png' #not sure how to work with that
+			#filename = 'mapped.png'
+			filename_1 = 'Smooth_mapped.png'
 			filename_2 = 'color.png'
+			filename_3 = 'smooth_color.png'
 
 			# Saving the edited depth image
-			cv2.imwrite(filename, transformed_depth_image)
-			cv2.imwrite(filename_1, smooth_depth_color_image)
-			cv2.imwrite(filename_2, color_image)
+			#cv2.imwrite(os.path.join(path , filename), transformed_depth_image)
+			if w =='color':
+				# Saving the color and colored depth image
+				cv2.imwrite(os.path.join(path , filename_3), smooth_depth_color_image)
+				cv2.imwrite(os.path.join(path , filename_2), color_image)
+
+				#read images
+				color= cv2.imread(path +'\\color.png')
+				colored_depth= cv2.imread(path +'\\smooth_color.png')
+
+				#return images
+				return(color, colored_depth)
+				
+			else:
+				# Saving the color and depth image
+				cv2.imwrite(os.path.join(path , filename_2), color_image)
+				cv2.imwrite(os.path.join(path , filename_1), smoothed_depth_image) 
+
+				#read images
+				color= cv2.imread(path +'\\color.png')
+				depth= cv2.imread(path +'\\Smooth_mapped.png')
+
+				#return images
+				return(color, depth)	
 
 			k = 1
 
@@ -80,3 +98,21 @@ if __name__ == "__main__":
 
 	pyK4A.device_stop_cameras()
 	pyK4A.device_close()
+
+#path: where to save the output, w: write 'color' for colored_depth / anything else for regular
+def read_images(path,w):
+	if w =='color':
+		#read images
+		color= cv2.imread(path +'\\color.png')
+		colored_depth= cv2.imread(path +'\\smooth_color.png')
+
+		#return images
+		return(color, colored_depth)
+
+	else:
+		#read images
+		color= cv2.imread(path +'\\color.png')
+		depth= cv2.imread(path +'\\Smooth_mapped.png')
+
+		#return images
+		return(color, depth)
