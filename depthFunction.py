@@ -5,6 +5,8 @@ import numpy as np
 from pyKinectAzure import pyKinectAzure, _k4a, postProcessing
 import cv2
 import os
+import PIL
+from PIL import Image
 
 #path: where to save the output, w: write 'color' for colored_depth / anything else for regular, maximum_hole_size: the bigger number-the better
 def get_data(path, w, maximum_hole_size):
@@ -67,9 +69,9 @@ def get_data(path, w, maximum_hole_size):
 				cv2.imwrite(os.path.join(path , filename_3), smooth_depth_color_image)
 				cv2.imwrite(os.path.join(path , filename_2), color_image)
 
-				#read images
-				color= cv2.imread(path +'\\color.png')
-				colored_depth= cv2.imread(path +'\\smooth_color.png')
+				#open images
+				color = Image.open(path +'\\color.png')
+				colored_depth= Image.open(path +'\\smooth_color.png')
 
 				#return images
 				return(color, colored_depth)
@@ -79,9 +81,9 @@ def get_data(path, w, maximum_hole_size):
 				cv2.imwrite(os.path.join(path , filename_2), color_image)
 				cv2.imwrite(os.path.join(path , filename_1), smoothed_depth_image) 
 
-				#read images
-				color= cv2.imread(path +'\\color.png')
-				depth= cv2.imread(path +'\\Smooth_mapped.png')
+				#open images
+				color= Image.open(path +'\\color.png')
+				depth= Image.open(path +'\\Smooth_mapped.png')
 
 				#return images
 				return(color, depth)	
