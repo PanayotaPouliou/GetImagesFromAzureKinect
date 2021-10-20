@@ -2,119 +2,86 @@ import sys
 sys.path.insert(1, 'C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\pyKinectAzure')
 
 import numpy as np
-from pyKinectAzure import pyKinectAzure, _k4a, postProcessing
+#from pyKinectAzure import pyKinectAzure, _k4a, postProcessing
 import cv2
 import os
 import PIL
 from PIL import Image
+import math
 
-#path: where to save the output, w: write 'color' for colored_depth / anything else for regular, maximum_hole_size: the bigger number-the better
-def get_data(path, w, maximum_hole_size):
-	# Path to the module
-	modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
+def get_world_coord(path, subj_coordinates, obj_coordinates):
 
-	# Initialize the library with the path containing the module
-	pyK4A = pyKinectAzure(modulePath)
+	depth= Image.open(path +'\\Smooth_mapped.png')
 
-	# Open device
-	pyK4A.device_open()
+	width, height = depth.size
 
-	# Modify camera configuration
-	device_config = pyK4A.config
-	device_config.color_format = _k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32
-	device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_1080P
-	device_config.depth_mode = _k4a.K4A_DEPTH_MODE_WFOV_2X2BINNED
-	print(device_config)
+	uo = width/2
+	vo = height/2
 
-	# Start cameras using modified configuration
-	pyK4A.device_start_cameras(device_config)
+	#FOV given by the depth camera settings
+	a = 90
+	b = 59
+
+	fx = uo / math.tan(a/2)
+	fy = vo / math.tan(b/2)
+
+	xs,ys = subj_coordinates
+	xo,yo = obj_coordinates
+
+	Zs = depth.getpixel(subj_coordinates)
+
+	Xs = (Zs*xs) / fx
+	Ys = (Zs*ys) / fy
 	
-	k = 0
-	while True:
-		# Get capture
-		pyK4A.device_get_capture()
+	Zo = depth.getpixel(obj_coordinates)
 
-		# Get the depth image from the capture
-		depth_image_handle = pyK4A.capture_get_depth_image()
+	Xo = (Zo*xo) / fx
+	Yo = (Zo*yo) / fy
 
-		# Get the color image from the capture
-		color_image_handle = pyK4A.capture_get_color_image()
+	A = (Xs,Ys,Zs)
+	B = (Xo,Yo,Zo)
 
-		# Check the image has been read correctly
-		if depth_image_handle and color_image_handle:
+	D = math.sqrt((Xs-Xo)**2 + (Ys-Yo)**2 + (Zs-Zo)**2)
 
-			# Read and convert the image data to numpy array:
-			color_image = pyK4A.image_convert_to_numpy(color_image_handle)[:,:,:3]
+	return D , A, B
 
-			# Transform the depth image to the color format
-			transformed_depth_image = pyK4A.transform_depth_to_color(depth_image_handle,color_image_handle)
+def get_Z(path, coordinates):
 
-			# Smooth the image using Navier-Stokes based inpainintg. maximum_hole_size defines 
-			# the maximum hole size to be filled, bigger hole size will take longer time to process
-			smoothed_depth_image = postProcessing.smooth_depth_image(transformed_depth_image, maximum_hole_size)
-			
-			# Convert depth image (mm) to color, the range needs to be reduced down to the range (0,255)
-			smooth_depth_color_image = cv2.applyColorMap(np.round(smoothed_depth_image/30).astype(np.uint8), cv2.COLORMAP_JET)
+	depth= Image.open(path +'\\Smooth_mapped.png')
 
-			# Filename
-			#filename = 'mapped.png'
-			filename_1 = 'Smooth_mapped.png'
-			filename_2 = 'color.png'
-			filename_3 = 'smooth_color.png'
+	z = depth.getpixel(coordinates)
 
-			# Saving the edited depth image
-			#cv2.imwrite(os.path.join(path , filename), transformed_depth_image)
-			if w =='color':
-				# Saving the color and colored depth image
-				cv2.imwrite(os.path.join(path , filename_3), smooth_depth_color_image)
-				cv2.imwrite(os.path.join(path , filename_2), color_image)
+	return z
 
-				#open images
-				color = Image.open(path +'\\color.png')
-				colored_depth= Image.open(path +'\\smooth_color.png')
+def get_world_coord_one(path, subj_coordinates, obj_coordinates):
 
-				#return images
-				return(color, colored_depth)
-				
-			else:
-				# Saving the color and depth image
-				cv2.imwrite(os.path.join(path , filename_2), color_image)
-				cv2.imwrite(os.path.join(path , filename_1), smoothed_depth_image) 
+	depth= Image.open(path +'\\Smooth_mapped.png')
 
-				#open images
-				color= Image.open(path +'\\color.png')
-				depth= Image.open(path +'\\Smooth_mapped.png')
+	width, height = depth.size
 
-				#return images
-				return(color, depth)	
+	uo = width/2
+	vo = height/2
 
-			k = 1
+	#FOV given by the camera settings
+	a = 90
+	b = 59
 
-			pyK4A.image_release(depth_image_handle)
-			pyK4A.image_release(color_image_handle)
+	fx = uo / math.tan(a)
+	fy = vo / math.tan(b)
 
-		pyK4A.capture_release()
+	xs,ys = subj_coordinates
+	xo,yo = obj_coordinates
 
-		if k==1:    # Esc key to stop
-			break
+	Zs = depth.getpixel(subj_coordinates)
 
-	pyK4A.device_stop_cameras()
-	pyK4A.device_close()
+	Xs = (xs - (Zs*uo)) / fx
+	Ys = (ys - (Zs*vo)) / fy
+	
+	Zo = depth.getpixel(obj_coordinates)
 
-#path: where to save the output, w: write 'color' for colored_depth / anything else for regular
-def read_images(path,w):
-	if w =='color':
-		#read images
-		color= cv2.imread(path +'\\color.png')
-		colored_depth= cv2.imread(path +'\\smooth_color.png')
+	Xo = (xo - (Zo*uo)) / fx
+	Yo = (yo - (Zo*vo)) / fy
 
-		#return images
-		return(color, colored_depth)
+	D = math.sqrt((Xs-Xo)**2 + (Ys-Yo)**2 + (Zs-Zo)**2)
 
-	else:
-		#read images
-		color= cv2.imread(path +'\\color.png')
-		depth= cv2.imread(path +'\\Smooth_mapped.png')
-
-		#return images
-		return(color, depth)
+	return D
