@@ -16,8 +16,8 @@ https://github.com/ibaiGorordo/pyKinectAzure
 get_data: allows you to open Kinect, modify camera configuarations, take shots (rgb, depth) and exports transformed depth map to the rgb image.
           it is also smoothening the edges of the depth map and it gives ou the option to prin the depth map in color for a better unerstanding of it.
           
-          ![Azure kinect color and depth combination](https://github.com/PanayotaPouliou/GetImagesFromAzureKinect/blob/master/ExamplePictures/Smooth_mapped_1.png)
-          ![Azure kinect color and smoothed depth combination](https://github.com/PanayotaPouliou/GetImagesFromAzureKinect/blob/master/ExamplePictures/Smooth_mapped_10.png)
+![Azure kinect color and depth combination](https://github.com/PanayotaPouliou/GetImagesFromAzureKinect/blob/master/ExamplePictures/Smooth_mapped_1.png)
+![Azure kinect color and smoothed depth combination](https://github.com/PanayotaPouliou/GetImagesFromAzureKinect/blob/master/ExamplePictures/Smooth_mapped_10.png)
           
           
 get_world_coord: takes as input two pixel coordinates A(xa,ya) and B(xb, yb) and gives as an output the real world coordinates with the camera being the O(0,0,0).
