@@ -1,6 +1,8 @@
 # Getting real world coordinates
-using pyKinectAzure Library to capture data
+
 ![Ditect the distance between A and B](https://github.com/PanayotaPouliou/GetImagesFromAzureKinect/blob/master/dData/color.png)
+
+using pyKinectAzure Library to capture data
 
 ## Prerequisites
 * [Azure-Kinect-Sensor-SDK](https://github.com/microsoft/Azure-Kinect-Sensor-SDK): required to build this library.
