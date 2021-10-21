@@ -1,11 +1,3 @@
-import sys
-sys.path.insert(1, 'C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\pyKinectAzure')
-
-import numpy as np
-from pyKinectAzure import pyKinectAzure, _k4a, postProcessing
-import cv2
-import os
-import PIL
 from PIL import Image
 import math
 
