@@ -73,7 +73,7 @@ def get_data(path, w, maximum_hole_size):
 	device_config = pyK4A.config
 	device_config.color_format = _k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32
 	device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_1080P
-	device_config.depth_mode = _k4a.K4A_DEPTH_MODE_WFOV_2X2BINNED
+	device_config.depth_mode = _k4a.K4A_DEPTH_MODE_NFOV_2X2BINNED
 	print(device_config)
 
 	# Start cameras using modified configuration
