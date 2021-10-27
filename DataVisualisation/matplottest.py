@@ -5,7 +5,7 @@ import csv
 from depthFunctions_forVis import get_world_coord
 
 
-df= pd.read_csv("CITAData.csv")
+df= pd.read_csv("C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\DataVisualisation\\CITAData.csv")
 #print(df)
 
 
