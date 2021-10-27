@@ -2,13 +2,11 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import pandas
 import pandas as pd
-import csv
 import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 
 
-points = pandas.read_csv('SobjObj_realcoords.csv')
-pp = PdfPages('histograms.pdf')
+points = pandas.read_csv('C:\\Users\ppou\source\\repos\pyKinectAzure\\DataVisualisation\\SobjObj_realcoords.csv')
 
 #create 2 figures
 fig = plt.figure()
