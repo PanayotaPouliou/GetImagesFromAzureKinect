@@ -32,15 +32,15 @@ n2 = points['o_id'].values
 n3 = n + ' -' + n2
 
 colors = np.random.rand(len(points),3)
-print (colors)
+#print (colors)
 
 for i,j,h,l,k,m in zip(x,y,x2,y2,z,z2):
     ax.plot([i,h],[j,l],[k,m],color = 'lightgrey')
 
 
 #Define the 1rst plot
-ax.scatter(x, y, z, label='Subjects', s=10, c='g', marker='o')
-ax.scatter(x2, y2, z2, label='Objects', s=10, c='r', marker='^')
+ax.scatter(x, y, z, label='Subjects', s=10, c='c', marker='o')
+ax.scatter(x2, y2, z2, label='Objects', s=10, c='purple', marker='^')
 ax.legend()
 
 #Labeling of each point
@@ -51,27 +51,25 @@ for i, txt in enumerate(n2):
     ax.text(x2[i], y2[i], z2[i], txt, color='gray')
 
 
-#Transparent backgrounf
-#color_tuple = (1.0, 1.0, 1.0, 0.0)
+#Transparent background
+color_tuple = (1.0, 1.0, 1.0, 0.0)
 
-#ax.w_xaxis.set_pane_color(color_tuple)
-#ax.w_yaxis.set_pane_color(color_tuple)
-#ax.w_zaxis.set_pane_color(color_tuple)
-#ax.w_xaxis.line.set_color(color_tuple)
-#ax.w_yaxis.line.set_color(color_tuple)
-#ax.w_zaxis.line.set_color(color_tuple)
+ax.w_xaxis.set_pane_color(color_tuple)
+ax.w_yaxis.set_pane_color(color_tuple)
+ax.w_zaxis.set_pane_color(color_tuple)
+ax.w_xaxis.line.set_color(color_tuple)
+ax.w_yaxis.line.set_color(color_tuple)
+ax.w_zaxis.line.set_color(color_tuple)
 
 #Remove lines and scoring
-#ax.set_xticks([])
-#ax.set_yticks([])
-#ax.set_zticks([])
-
-
+ax.set_xticks([])
+ax.set_yticks([])
+ax.set_zticks([])
 
 #Axis labels
-ax.set_xlabel('X_axis')
-ax.set_ylabel('Y_axis')
-ax.set_zlabel('Z_axis')
+#ax.set_xlabel('X_axis')
+#ax.set_ylabel('Y_axis')
+#ax.set_zlabel('Z_axis')
 
 #2nd plot
 #colors = np.random.rand(len(points),3)
