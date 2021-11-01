@@ -1,17 +1,14 @@
 from PIL import Image
 import math
 
-def get_world_coord(path, subj_coordinates, obj_coordinates):
+def get_world_coord(img_depth, subj_coordinates, obj_coordinates):
 
-	#open the transformed, smoothed depth image
-	depth= Image.open(path +'\\Smooth_mapped.png')
-
-	width, height = depth.size
+	width, height = img_depth.size
 
 	uo = width/2
 	vo = height/2
 
-	#FOV given by the depth camera settings
+	#FOV (90, 59) given by the depth camera settings
 	a = 90*math.pi/180
 	b = 59*math.pi/180
 
@@ -29,8 +26,8 @@ def get_world_coord(path, subj_coordinates, obj_coordinates):
 	yoo= yo - vo
 
 	#Get depth of pixels
-	Zs = depth.getpixel(subj_coordinates)
-	Zo = depth.getpixel(obj_coordinates)
+	Zs = img_depth.getpixel(subj_coordinates)
+	Zo = img_depth.getpixel(obj_coordinates)
 
 	#calculate real world coordinates
 	Xs = (Zs*xss) / fx
@@ -49,10 +46,9 @@ def get_world_coord(path, subj_coordinates, obj_coordinates):
 	#This function returns Distance, Subject_coords, Object_coords
 	return D , A, B
 
-def get_Z(path, coordinates):
 
-	depth= Image.open(path +'\\Smooth_mapped.png')
+#A function getting the depth value from the depthmap
+def get_Z(img_depth, coordinates):
 
-	z = depth.getpixel(coordinates)
-
+	z = img_depth.getpixel(coordinates)
 	return z

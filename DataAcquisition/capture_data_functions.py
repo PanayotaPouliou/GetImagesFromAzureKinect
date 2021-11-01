@@ -4,6 +4,7 @@ sys.path.insert(1, 'C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\pyKinectAzure
 import numpy as np
 from pyKinectAzure import pyKinectAzure, _k4a, postProcessing
 import cv2
+import time
 import os
 
 #path: where to save the output, w: write 'color' for colored_depth / anything else for regular, maximum_hole_size: the bigger number-the better
@@ -98,3 +99,59 @@ def get_data(path, w, maximum_hole_size):
 
 	pyK4A.device_stop_cameras()
 	pyK4A.device_close()
+
+
+def create_folder(path, folderName):
+    newpath = path + '\\' + folderName
+    if not os.path.exists(newpath):
+        os.makedirs(newpath)
+    #else:
+        #print('The name alreasy exists, please, provide a different folder name.')
+
+    return newpath
+
+
+def timestamp(f_path): 
+    # Getting the path of the file
+    #f_path = 'C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\filesaving'
+    path_c = f_path + '\\color.png'
+    path_d = f_path + '\\Smooth_mapped.png'
+
+
+    # Obtaining the creation time (in seconds)
+    # of the file/folder (datatype=int)
+    t = os.path.getctime(path_c)
+    t2 = os.path.getctime(path_d)
+
+
+    # Converting the time to an epoch string
+    # (the output timestamp string would
+    # be recognizable by strptime() without
+    # format quantifers)
+    t_str = time.ctime(t)
+    t_str2 = time.ctime(t2)
+  
+    # Converting the string to a time object
+    t_obj = time.strptime(t_str)
+    t_obj2 = time.strptime(t_str2)
+
+    # Transforming the time object to a timestamp
+    # of ISO 8601 format
+    form_t = time.strftime("%Y-%m-%d %H:%M:%S", t_obj)
+    form_t2 = time.strftime("%Y-%m-%d %H:%M:%S", t_obj2)
+  
+    # Since colon is an invalid character for a
+    # Windows file name Replacing colon with a
+    # similar looking symbol found in unicode
+    # Modified Letter Colon " " (U+A789)
+    form_t = form_t.replace(":", "꞉")
+    form_t2 = form_t2.replace(":", "꞉")
+  
+    # Renaming the filename to its timestamp
+    os.rename(
+        path_c, os.path.split(path_c)[0] + '/' + form_t + ' c' + os.path.splitext(path_c)[1])
+    
+    os.rename(
+        path_d, os.path.split(path_d)[0] + '/' + form_t2 + ' d' + os.path.splitext(path_d)[1])
+
+    return form_t, form_t2
