@@ -58,7 +58,7 @@ def get_data(path, w, maximum_hole_size):
 			# Filename
 			#filename = 'mapped.png'
 			filename_1 = 'Smooth_mapped.png'
-			filename_2 = 'color.png'
+			filename_2 = 'color.jpg'
 			filename_3 = 'smooth_color.png'
 
 			# Saving the edited depth image
@@ -69,7 +69,7 @@ def get_data(path, w, maximum_hole_size):
 				cv2.imwrite(os.path.join(path , filename_2), color_image)
 
 				#read images
-				color= cv2.imread(path +'\\color.png')
+				color= cv2.imread(path +'\\color.jpg')
 				colored_depth= cv2.imread(path +'\\smooth_color.png')
 
 				#return images
@@ -81,7 +81,7 @@ def get_data(path, w, maximum_hole_size):
 				cv2.imwrite(os.path.join(path , filename_1), smoothed_depth_image) 
 
 				#read images
-				color= cv2.imread(path +'\\color.png')
+				color= cv2.imread(path +'\\color.jpg')
 				depth= cv2.imread(path +'\\Smooth_mapped.png')
 
 				#return images
@@ -114,7 +114,7 @@ def create_folder(path, folderName):
 def timestamp(f_path): 
     # Getting the path of the file
     #f_path = 'C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\filesaving'
-    path_c = f_path + '\\color.png'
+    path_c = f_path + '\\color.jpg'
     path_d = f_path + '\\Smooth_mapped.png'
 
 
