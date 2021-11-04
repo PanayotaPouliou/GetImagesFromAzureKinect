@@ -136,22 +136,15 @@ def timestamp(f_path):
     t_obj2 = time.strptime(t_str2)
 
     # Transforming the time object to a timestamp
-    # of ISO 8601 format
-    form_t = time.strftime("%Y-%m-%d %H:%M:%S", t_obj)
-    form_t2 = time.strftime("%Y-%m-%d %H:%M:%S", t_obj2)
+    # of Year_Month_Day_Hour_Min_Sec : 20211104173745
+    form_t = time.strftime("%Y%m%d%H%M%S", t_obj)
+    form_t2 = time.strftime("%Y%m%d%H%M%S", t_obj2)
   
-    # Since colon is an invalid character for a
-    # Windows file name Replacing colon with a
-    # similar looking symbol found in unicode
-    # Modified Letter Colon " " (U+A789)
-    form_t = form_t.replace(":", "꞉")
-    form_t2 = form_t2.replace(":", "꞉")
-  
-    # Renaming the filename to its timestamp
+    # Renaming the filename to its timestamp plus RGB or D depending on the img type
     os.rename(
-        path_c, os.path.split(path_c)[0] + '/' + form_t + ' c' + os.path.splitext(path_c)[1])
+        path_c, os.path.split(path_c)[0] + '/' + 'RGB_' + form_t + os.path.splitext(path_c)[1])
     
     os.rename(
-        path_d, os.path.split(path_d)[0] + '/' + form_t2 + ' d' + os.path.splitext(path_d)[1])
+        path_d, os.path.split(path_d)[0] + '/' + 'D_' + form_t2 + os.path.splitext(path_d)[1])
 
     return form_t, form_t2
