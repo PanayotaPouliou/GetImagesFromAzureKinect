@@ -7,7 +7,7 @@ def get_obj_dimentions(obj_coords, obj_rect):
     uo = 1920/2
     vo = 1080/2
 
-    #FOV (90, 59) given by the depth camera settings
+    #FOV (90, 59) given by the camera settings
     a = 90*math.pi/180
     b = 59*math.pi/180
 
@@ -38,13 +38,13 @@ def get_obj_dimentions(obj_coords, obj_rect):
 
 
         #Get the pixel coordinates of the points that we want to get their real world coords
-        xa,ya= float(sep[1]),float(sep[0])
-        xb,yb= float(sep[3]),float(sep[2])
+        xa,ya= float(sep[0]),float(sep[1])
+        xb,yb= float(sep[2]),float(sep[3])
         #print(xa,ya)
 
         #calculate real world coordinates of point A
         xas= xa - uo
-        yas= xb -vo
+        yas= ya -vo
 
         xA= (Z[i]*xas)/fx
         yA= -(Z[i]*yas)/fy
