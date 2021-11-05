@@ -2,27 +2,55 @@
 from PIL import Image
 #from PIL import ExifTags
 from PIL.ExifTags import TAGS
+import sys
+from subprocess import check_output
+import piexif
 
 
 # path to the image or video
-imagename = "image.jpg"
+image_name = "image.jpg"
+
+exif_dict = piexif.load(image_name)
 
 # read the image data using PIL
-image = Image.open(imagename)
+#image = Image.open(imagename)
 
 # extract EXIF data
-exifdata = image.getexif()
-print(exifdata)
+#exif = image.getexif()
+#imgdata = image.getdata()
+#print(imgdata)
 
-# iterating over all EXIF data fields
-for tag_id in exifdata:
-    # get the tag name, instead of human unreadable tag id
-    tag = TAGS.get(tag_id, tag_id)
-    data = exifdata.get(tag_id)
-    # decode bytes 
-    if isinstance(data, bytes):
-        data = data.decode()
-    print(f"{tag:25}: {data}")
+#print(exif.items())
+#for tag_id, value in exif.items():
+    #tag = TAGS.get(tag_id, tag_id)
+
+    #print(tag_id)
+    #print(tag)
+
+
+ #iterating over all EXIF data fields
+#for tag_id in exifdata:
+#    # get the tag name, instead of human unreadable tag id
+#    tag = TAGS.get(tag_id, tag_id)
+#    data = exifdata.get(tag_id)
+#    # decode bytes 
+ #   if isinstance(data, bytes):
+ #       data = data.decode()
+ #   print(f"{tag:25}: {data}")
+
+
+
+#c = check_output("identify -verbose img.jpg".split())
+#output= "identify -verbose image.jpg".split()
+#print(output)
+#c = check_output('img.jpg')
+#d = {}
+#print(c)
+#for line in c.splitlines()[:-1]:
+#    spl = line.split(":",1)
+#    k, v = spl
+#    d[k.lstrip()] = v.strip()
+#print(d)
 
 #img = Image.open(r"DataAcquisition\filesaving\CITA\Smooth_mapped.png")
 #print(img)
