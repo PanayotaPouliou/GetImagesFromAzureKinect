@@ -1,11 +1,14 @@
 import sys
 sys.path.insert(1, 'C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\pyKinectAzure')
-
-import numpy as np
 from pyKinectAzure import pyKinectAzure, _k4a, postProcessing
+import csv
 import cv2
 import time
 import os
+import os.path
+from PIL import Image
+import numpy as np
+
 
 #path: where to save the output, w: write 'color' for colored_depth / anything else for regular, maximum_hole_size: the bigger number-the better
 def get_data(path, w, maximum_hole_size):
@@ -111,18 +114,35 @@ def create_folder(path, folderName):
     return newpath
 
 
-def timestamp(f_path): 
+def timestamp(f_path, filename):
     # Getting the path of the file
     #f_path = 'C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\filesaving'
     path_c = f_path + '\\color.jpg'
     path_d = f_path + '\\Smooth_mapped.png'
 
+    im_c = Image.open(path_c)
+    im_d = Image.open(path_d)
+
+    #get image's width and height
+    width_c, height_c = im_c.size
+    width_d, height_d = im_d.size
+
+    #get image format
+    format_c = im_c.format
+    format_d_c = im_c.format_description
+    format_d_c = format_d_c.replace((format_c + ' '), "")
+
+    format = im_d.format
+    format_d = im_d.format_description
+    format_d = format_d.replace((format + ' '), "")
+
+    im_c.close()
+    im_d.close()
 
     # Obtaining the creation time (in seconds)
     # of the file/folder (datatype=int)
     t = os.path.getctime(path_c)
     t2 = os.path.getctime(path_d)
-
 
     # Converting the time to an epoch string
     # (the output timestamp string would
@@ -130,7 +150,7 @@ def timestamp(f_path):
     # format quantifers)
     t_str = time.ctime(t)
     t_str2 = time.ctime(t2)
-  
+
     # Converting the string to a time object
     t_obj = time.strptime(t_str)
     t_obj2 = time.strptime(t_str2)
@@ -139,12 +159,60 @@ def timestamp(f_path):
     # of Year_Month_Day_Hour_Min_Sec : 20211104173745
     form_t = time.strftime("%Y%m%d%H%M%S", t_obj)
     form_t2 = time.strftime("%Y%m%d%H%M%S", t_obj2)
-  
+
     # Renaming the filename to its timestamp plus RGB or D depending on the img type
     os.rename(
-        path_c, os.path.split(path_c)[0] + '/' + 'RGB_' + form_t + os.path.splitext(path_c)[1])
-    
+        path_c, os.path.split(path_c)[0] + '\\' + 'RGB_' + form_t + os.path.splitext(path_c)[1])
+
     os.rename(
-        path_d, os.path.split(path_d)[0] + '/' + 'D_' + form_t2 + os.path.splitext(path_d)[1])
+        path_d, os.path.split(path_d)[0] + '\\' + 'D_' + form_t2 + os.path.splitext(path_d)[1])
+
+
+    newpath = f_path + '\\' + filename + '.csv'
+
+    file_exists = os.path.exists(newpath)
+
+
+
+    if file_exists==True:
+
+        # open the file in the write mode
+        with open(newpath,'a') as f:
+            # create the csv writer
+            writer = csv.writer(f)
+            # write the rows to the csv file for each one of the 2 generated images
+            name_c = 'RGB_' + form_t
+            row = [name_c, width_c, height_c,
+                  form_t, format_c, format_d_c, path_c]
+            writer.writerow(row)
+            name_d = 'D_' + form_t2
+            row = [name_d, width_d, height_d,
+                  form_t2, format, format_d, path_d]
+            writer.writerow(row)
+
+    else:
+        # open the file in the write mode
+        f = open(newpath, 'w')
+
+        # create the csv writer
+        writer = csv.writer(f)
+        # Create the header of the csv file
+        head = ['file_name', 'width', 'height',
+                'timestamp', 'format', 'f_description', 'file']
+
+        writer.writerow(head)
+
+        # write the rows to the csv file for each one of the 2 generated images
+        name_c = 'RGB_' + form_t
+        row = [name_c, width_c, height_c,
+              form_t, format_c, format_d_c, path_c]
+        writer.writerow(row)
+        name_d = 'D_' + form_t2
+        row = [name_d, width_d, height_d,
+              form_t2, format, format_d, path_d]
+        writer.writerow(row)
+
+        # close the file
+        f.close()
 
     return form_t, form_t2

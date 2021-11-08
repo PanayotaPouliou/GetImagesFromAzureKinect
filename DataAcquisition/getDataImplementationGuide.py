@@ -8,8 +8,11 @@ in_path='C:\\Users\\ppou\\source\\repos\\pyKinectAzure\\DataAcquisition\\filesav
 #New Folder Creation
 path = create_folder(in_path, 'CITA')
 
+#New metadata.csv file creation
+#f=create_MetaData(path, 'CITA')
+
 #Save files in the created folder
 get_data(path, 'no', 10)
 
 #renames files in the path with their timestamp
-timestamp(path)
+timestamp(path, 'CITA')
