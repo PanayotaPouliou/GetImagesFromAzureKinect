@@ -88,7 +88,7 @@ def get_data(path, w, maximum_hole_size):
 				depth= cv2.imread(path +'\\Smooth_mapped.png')
 
 				#return images
-				return(color, depth)	
+				return(color, depth)
 
 			k = 1
 
@@ -102,6 +102,20 @@ def get_data(path, w, maximum_hole_size):
 
 	pyK4A.device_stop_cameras()
 	pyK4A.device_close()
+
+    #print('camera closed')
+
+
+def closeCamera():
+    # Path to the module
+	modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
+
+	# Initialize the library with the path containing the module
+	pyK4A = pyKinectAzure(modulePath)
+
+    #pyK4A.device_stop_cameras()
+	pyK4A.device_close()
+
 
 
 def create_folder(path, folderName):
@@ -216,3 +230,15 @@ def timestamp(f_path, filename):
         f.close()
 
     return form_t, form_t2
+
+
+def captureData(in_path, fol_name, fil_name):
+
+    #New Folder Creation
+    path = create_folder(in_path, fol_name)
+
+    #Save files in the created folder
+    get_data(path, 'no', 10)
+
+    #renames files in the path with their timestamp
+    timestamp(path, fil_name)
