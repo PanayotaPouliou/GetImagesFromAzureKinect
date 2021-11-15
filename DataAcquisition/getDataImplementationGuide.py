@@ -14,16 +14,13 @@ get_data(path, 'no', 10)
 timestamp(path, 'CITA_timeframe')
 
 
+
 ########## USE IT WITH ONE FUNCTION ##########
 # from os import path
-# from capture_data_functions import get_data, create_folder
+# from onefunction import get_data, create_folder
 
 # #Yota's path
 # in_path='C:\\Users\\ppou\\Downloads\\gitclone\\sg_benchmark\\data\\input\\RGBD'
-
-# #Jen's path
-# #in_path = 'C:\\Users\\jejor\\LocalCode\\sg_benchmark\\data\\input\\RGBD'
-
 
 # #New Folder Creation
 # path = create_folder(in_path, '-ela')
